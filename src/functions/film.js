@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const addMovie = async (movieData) => {
     try {
         const newMovie = await prisma.movie.create({
-            data:readableToString(movieData),
+            data: await readableToString(movieData),
         });
         return newMovie;
     } catch (error) {
