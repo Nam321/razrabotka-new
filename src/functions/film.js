@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const addMovie = async (movieData) => {
     try {
         const newMovie = await prisma.movie.create({
-            data: movieData,
+            data:readableToString(movieData),
         });
         return newMovie;
     } catch (error) {
@@ -42,4 +42,15 @@ app.http('film', {
         }
     }
 });
+
+async function readableToString(readable) {
+    const reader = await readable.getReader();
+    let result = '';
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        result += new TextDecoder("utf-8").decode(value);
+    }
+    return JSON.parse(result);
+}
 
