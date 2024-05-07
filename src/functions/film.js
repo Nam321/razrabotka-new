@@ -1,3 +1,4 @@
+const { app } = require('@azure/functions');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
@@ -13,20 +14,32 @@ const addMovie = async (movieData) => {
     }
 };
 
-module.exports = async function (context, req) {
-    try {
-        const movieData = req.body; // Assuming the movie data is sent in the request body
+app.http('film', {
+    methods: ['GET', 'POST'],
+    authLevel: 'anonymous',
+    handler: async (request, context) => {
+        context.log(`Http function processed request for url "${request.url}"`);
 
-        const addedMovie = await addMovie(movieData);
+        if (request.method === 'POST') {
+            try {
+                const movieData = request.body; // Assuming the movie data is sent in the request body
 
-        context.res = {
-            status: 201, // Created
-            body: addedMovie,
-        };
-    } catch (error) {
-        context.res = {
-            status: 500, // Internal Server Error
-            body: `Error adding movie: ${error.message}`,
-        };
+                const addedMovie = await addMovie(movieData);
+
+                return {
+                    status: 201, // Created
+                    body: addedMovie,
+                };
+            } catch (error) {
+                return {
+                    status: 500, // Internal Server Error
+                    body: `Error adding movie: ${error.message}`,
+                };
+            }
+        } else {
+            const name = request.query.get('name') || (await request.text()) || 'world';
+            return { body: `Hello, ${name}!` };
+        }
     }
-};
+});
+
