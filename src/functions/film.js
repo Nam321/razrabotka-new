@@ -28,7 +28,7 @@ app.http('film', {
 
                 return {
                     status: 201, // Created
-                    body: addedMovie,
+                    body: JSON.stringify(addedMovie),
                 };
             } catch (error) {
                 return {
