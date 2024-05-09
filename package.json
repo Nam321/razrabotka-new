@@ -9,6 +9,7 @@
   "dependencies": {
     "@azure/functions": "^4.0.0",
     "@prisma/client": "^5.13.0",
+    "azure-functions": "^1.0.2",
     "joi": "^17.13.1",
     "prisma": "^5.13.0"
   },
